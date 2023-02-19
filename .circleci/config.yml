@@ -196,27 +196,32 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - project/.circleci/ansible/inventory.txt
+            - /.circleci/ansible/inventory.txt
       - destroy-environment      
 
-#   configure-infrastructure:
-#     docker:
-#       # Docker image here that supports Ansible
-#     steps:
-#       # Checkout code from git
-#       # Add ssh keys with fingerprint
-#       # attach workspace
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # Your code here
-#             exit 1
-#       - run:
-#           name: Configure server
-#           command: |
-#             # Your code here
-#             exit 1
-#       # Here's where you will add some code to rollback on failure      
+  configure-infrastructure:
+    docker:
+      # Docker image here that supports Ansible
+    steps:
+      - checkout
+      - add_ssh_keys: 
+          fingerprints: ["6c:16:c9:87:db:27:29:81:a9:70:85:ad:15:1d:c3:bb"]
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+            apk add --update --no-cache python3 py3-pip
+            /usr/local/bin/python -m pip install --upgrade pip
+            pip install awscli
+      - run:
+          name: Configure server
+          command: |
+            cd ~/.circleci/ansible
+            cat inventory.txt
+            ansible-playbook -i inventory.txt configure-server.yml
+      - destroy-environment      
 
 #   run-migrations:
 #     docker:
