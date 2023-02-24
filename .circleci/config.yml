@@ -314,6 +314,10 @@ jobs:
       steps:
         - checkout
         - run:
+            name: Install curl
+            command: |
+              apk add --update curl
+        - run:
             name: Install AWS CLI v2
             command: |
               curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
