@@ -382,7 +382,7 @@ jobs:
                 --output text
               )
             export API_URL="http://${BACKEND_IP}:3030"
-            cat frontend/.env
+            # cat frontend/.env
 
             ip_backend=$(
                 aws ec2 describe-instances \
