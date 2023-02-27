@@ -336,13 +336,13 @@ jobs:
               apk add --update tar gzip
 
               /usr/local/bin/python -m pip install --upgrade pip
-              
+
               pip install awscli
               # pip install ansible
-              sudo apt update
-              sudo apt install nodejs npm
-              sudo npm install -g n
-              sudo n 13.8
+              # sudo apt update
+              apk add --update nodejs npm
+              # sudo npm install -g n
+              # sudo n 13.8
         - run:
             name: Deploy backend
             command: |
