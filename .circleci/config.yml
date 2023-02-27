@@ -330,12 +330,12 @@ jobs:
         - run:
             name: Install dependencies
             command: |
-              # apk add --update ansible
+               apk add --update ansible
               # apk add --update tar gzip nodejs
               # pip install awscli
               apk add --update tar gzip
               pip install awscli
-              pip install ansible
+              # pip install ansible
               sudo apt update
               sudo apt install nodejs npm
               sudo npm install -g n
