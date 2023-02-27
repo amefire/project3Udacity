@@ -331,18 +331,15 @@ jobs:
             name: Install dependencies
             command: |
               apk add --update ansible
-              # apk add --update tar gzip nodejs
-              # pip install awscli
+              
               apk add --update tar gzip
 
               /usr/local/bin/python -m pip install --upgrade pip
 
               pip install awscli
-              # pip install ansible
-              # sudo apt update
+              
               apk add --update nodejs npm
-              # sudo npm install -g n
-              # sudo n 13.8
+              
         - run:
             name: Deploy backend
             command: |
@@ -474,8 +471,8 @@ workflows:
           requires: [run-migrations]
       - deploy-backend:
           requires: [run-migrations]
-      # - smoke-test:
-      #     requires: [deploy-backend, deploy-frontend]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
       #     requires: [smoke-test]
       # - cleanup:
