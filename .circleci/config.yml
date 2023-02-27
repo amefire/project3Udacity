@@ -317,12 +317,12 @@ jobs:
             name: Install curl
             command: |
               apk add --update curl
-        - run:
-            name: Install AWS CLI v2
-            command: |
-              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-              unzip awscliv2.zip
-              sudo ./aws/install
+        # - run:
+        #     name: Install AWS CLI v2
+        #     command: |
+        #       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        #       unzip awscliv2.zip
+        #       sudo ./aws/install
         - add_ssh_keys: 
             fingerprints: ["6c:16:c9:87:db:27:29:81:a9:70:85:ad:15:1d:c3:bb"]
         - attach_workspace:
@@ -330,8 +330,16 @@ jobs:
         - run:
             name: Install dependencies
             command: |
-              apk add --update ansible
-              apk add --update tar gzip nodejs
+              # apk add --update ansible
+              # apk add --update tar gzip nodejs
+              # pip install awscli
+              apk add --update tar gzip
+              pip install awscli
+              pip install ansible
+              sudo apt update
+              sudo apt install nodejs npm
+              sudo npm install -g n
+              sudo n 13.8
         - run:
             name: Deploy backend
             command: |
