@@ -337,9 +337,9 @@ jobs:
               pip install awscli
               # pip install ansible
               sudo apt update
-              sudo apt install nodejs npm
-              sudo npm install -g n
-              sudo n 13.8
+              apt install nodejs npm
+              # sudo npm install -g n
+              # sudo n 13.8
         - run:
             name: Deploy backend
             command: |
