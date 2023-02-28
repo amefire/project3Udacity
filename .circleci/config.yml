@@ -393,10 +393,10 @@ jobs:
               
            
             url_api="http://${ip_backend}:3030"
-            echo "${BACKEND_IP}"
+            echo ${BACKEND_IP};
            
 
-            echo "${url_api}"
+            echo "${url_api}";
             echo "${ip_backend}";
             if curl "${url_api}/api/status" | grep "ok"
             then
