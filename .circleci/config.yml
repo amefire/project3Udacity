@@ -317,12 +317,7 @@ jobs:
             name: Install curl
             command: |
               apk add --update curl
-        # - run:
-        #     name: Install AWS CLI v2
-        #     command: |
-        #       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        #       unzip awscliv2.zip
-        #       sudo ./aws/install
+      
         - add_ssh_keys: 
             fingerprints: ["6c:16:c9:87:db:27:29:81:a9:70:85:ad:15:1d:c3:bb"]
         - attach_workspace:
@@ -379,8 +374,10 @@ jobs:
               aws ec2 describe-instances \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-                --output text
+                --output text >> new.txt
               )
+
+              
             export API_URL="http://${BACKEND_IP}:3030"
             # cat frontend/.env
 
@@ -390,9 +387,12 @@ jobs:
                   --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
                   --output text
               )
+
+            ip=$(cat new.txt)
+            cat new.txt
               
            
-            url_api="http://${ip_backend}:3030"
+            url_api="http://${ip}:3030"
             echo ${BACKEND_IP};
            
 
