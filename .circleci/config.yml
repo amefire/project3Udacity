@@ -376,7 +376,7 @@ jobs:
           name: Get the backend url
           command: |
             export BACKEND_IP=$(
-                aws ec2 describe-instances \
+              aws ec2 describe-instances \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
                 --output text
@@ -386,13 +386,14 @@ jobs:
 
             ip_backend=$(
                 aws ec2 describe-instances \
-                --query 'Reservations[*].Instances[*].PublicIpAddress' \
-                --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-                --output text
+                  --query 'Reservations[*].Instances[*].PublicIpAddress' \
+                  --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+                  --output text
               )
               
            
             url_api="http://${ip_backend}:3030"
+            echo "${BACKEND_IP}"
            
 
             echo "${url_api}"
