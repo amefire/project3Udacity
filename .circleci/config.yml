@@ -390,12 +390,13 @@ jobs:
                 --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
                 --output text
               )
-              echo ${ip_backend};
+              
            
             url_api="http://${ip_backend}:3030"
            
 
             echo "${url_api}"
+            echo "${ip_backend}";
             if curl "${url_api}/api/status" | grep "ok"
             then
                 return 0
