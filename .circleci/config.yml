@@ -183,10 +183,12 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            aws ec2 describe-instances \
+            BACKEND_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:project,Values=udapeople-backend" \
-              --output text >> .circleci/ansible/inventory.txt
+              --output text)
+            echo $BACKEND_IP >> .circleci/ansible/inventory.txt
+            cat .circleci/ansible/inventory.txt
 
       - run:
           name: install tar and gzip
@@ -278,6 +280,8 @@ jobs:
                   --output text
               )
               export API_URL="http://${BACKEND_IP}:3030"
+              echo "API_URL=http://${BACKEND_IP}:3030" >> frontend/.env
+              cat frontend/.env
               # cat frontend/.env
         - run:
             name: Deploy frontend objects
