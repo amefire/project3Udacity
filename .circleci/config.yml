@@ -374,31 +374,13 @@ jobs:
               aws ec2 describe-instances \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-                --output text >> new.txt
-              )
+                --output text)
 
               
-            export API_URL="http://${BACKEND_IP}:3030"
-            # cat frontend/.env
+            export API_URL=http://${BACKEND_IP}:3030
 
-            ip_backend=$(
-                aws ec2 describe-instances \
-                  --query 'Reservations[*].Instances[*].PublicIpAddress' \
-                  --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-                  --output text
-              )
-
-            ip=$(cat new.txt)
-            cat new.txt
-              
            
-            url_api="http://${ip}:3030"
-            echo ${BACKEND_IP};
-           
-
-            echo "${url_api}";
-            echo "${ip_backend}";
-            if curl "${url_api}/api/status" | grep "ok"
+            if curl $API_URL/api/status | grep "ok"
             then
                 return 0
             else
