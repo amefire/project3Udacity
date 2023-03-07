@@ -370,7 +370,7 @@ jobs:
       - run:
           name: Install node js
           command: |
-             Install Node.js LTS version as our base Node.js version
+            Install Node.js LTS version as our base Node.js version
             curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
             sudo apt install -y nodejs
             # specify n version manager to use Node.js v13.8.0
