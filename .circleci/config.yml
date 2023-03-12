@@ -575,35 +575,19 @@ jobs:
 
   smoke-test:
     docker:
-      - image: cimg/base:stable   
+      - image: cimg/base:stable   # executor
     steps:
       - checkout
+      - install_awscli
+      - install_nodejs
       - run:
-          name: Install awcli, tar and curl
+          name: Backend smoke test.
           command: |
-            sudo apt install -y tar gzip curl
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
-
-      - run:
-          name: Install node js
-          command: |
-            
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - 
-            sudo apt install -y nodejs
-            # specify n version manager to use Node.js v13.8.0
-            sudo npm install --global n
-            # sudo n 13.8.0
-
-      - run:
-          name: Get the backend url
-          command: |
-            BACKEND_IP=$(aws ec2 describe-instances \
+            BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
-            export API_URL=http://${BACKEND_IP}:3030
+            export API_URL=http://${BACKEND_PUBLIC_IP}:3030
             if curl --connect-timeout 60 $API_URL/api/status | grep "ok"
             then
               exit 0
@@ -611,30 +595,18 @@ jobs:
               exit 1
             fi
       - run:
-          name: Backend smoke test.
-          command: |
-            # export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
-            if curl "${API_URL}/api/status" | grep "ok"
-            then
-                return 0
-            else
-                return 1
-            fi
-      - run:
           name: Frontend smoke test.
           command: |
-            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"            
-            echo ${URL} 
-            if curl -s ${URL} | grep "Welcome"
+            FRONTEND_WEBSITE=http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com
+            if curl -s $FRONTEND_WEBSITE | grep "Welcome"
             then
-                # Change this to 0 after the job fails
-              return 1
+              # This is the intentional error, if "Welcome" is indeed in the response this step will exit with exit code 1
+              exit 1
             else
-              return 1
+              exit 1
             fi
       - destroy-environment
-      - revert-migrations  
+      - revert-migrations    
 
   cloudfront-update:
     docker:
