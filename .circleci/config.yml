@@ -203,19 +203,19 @@ jobs:
 
   scan-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0   
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys:
+            - backend-deps-{{ checksum "backend/package-lock.json" }}
       - run:
-          name: Scan back-end
+          name: Scan backend packages
           command: |
             cd backend
-            npm install
-            npm audit fix --force
-            # npm audit --audit-level=critical
-            npm audit fix --force
+            npm install 
+            npm audit fix --force --audit-level=critical
+            npm audit fix --force --audit-level=critical
 
       # Checkout code from git
       # Restore from cache
@@ -304,8 +304,8 @@ jobs:
 
   configure-infrastructure:
     docker:
-      # Docker image is here that supports Ansible
-      - image: cimg/python:3.10   #Executor
+      #the Docker image that is here that supports Ansible
+      - image: cimg/python:3.10   # Executor
     steps:
       - checkout
       - install_ansible
