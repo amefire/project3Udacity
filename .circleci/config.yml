@@ -23,14 +23,13 @@ commands:
     description: Install Node.js 13.8.0
     steps:
       - run:
-          name: Install Node.js 13.8.0
+          name: install node.js 13.8.0
           command: |
-            # Install Node.js LTS version as our base Node.js version
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - 
             sudo apt install -y nodejs
-            # Use n version manager to use Node.js v13.8.0
+            # specify n version manager to use Node.js v13.8.0
             sudo npm install --global n
-            sudo n 13.8.0
+            # sudo n 13.8.0
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
@@ -308,7 +307,7 @@ jobs:
       - restore_cache:
           keys: [backend-deps]
       - add_ssh_keys:
-          fingerprints: ["d4:64:2b:23:8c:d9:0c:72:4e:7f:f7:1b:fa:81:6b:3e"]
+          fingerprints: ["6c:16:c9:87:db:27:29:81:a9:70:85:ad:15:1d:c3:bb"]
       - attach_workspace:
           at: ~/
       - run:
@@ -469,7 +468,7 @@ jobs:
       - install_ansible
       - install_awscli
       - add_ssh_keys:
-          fingerprints: ["d4:64:2b:23:8c:d9:0c:72:4e:7f:f7:1b:fa:81:6b:3e"]
+          fingerprints: ["6c:16:c9:87:db:27:29:81:a9:70:85:ad:15:1d:c3:bb"]
       # - run:
       #     name: Install dependencies
       #     command: |
