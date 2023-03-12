@@ -74,9 +74,9 @@ jobs:
   #         paths: [backend/node_modules]
   #         key: backend-build
 
-    build-backend:
+  build-backend:
     docker:
-      - image: circleci/node:13.8.0   #Executor
+      - image: circleci/node:13.8.0   # Executor
     steps:
       - checkout
       - restore_cache:
