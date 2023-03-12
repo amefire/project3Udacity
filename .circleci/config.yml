@@ -166,7 +166,7 @@ jobs:
 
   test-backend:
     docker:
-      - image: cimg/node:13.8.0   # Executor
+      - image: cimg/node:13.8.0   # executor
     steps:
       - checkout
       - restore_cache:
@@ -376,12 +376,13 @@ jobs:
     steps:
       - checkout
       - install_awscli
-      - install_nodejs
+      # - install_nodejs
       - restore_cache:
           keys: [backend-deps]
       - run:
           name: Run migrations
           command: |
+            apk add --update nodejs npm
             cd backend
             npm install
             npm run migrations > migrations_dump.txt
