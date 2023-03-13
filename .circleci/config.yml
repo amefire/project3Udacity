@@ -434,7 +434,7 @@ jobs:
   configure-node-exporter:
     docker:
      
-      - image: cimg/python:3.10     # Executor    
+      - image: cimg/python:3.10     #     
     steps:
       - checkout
       - install_ansible
