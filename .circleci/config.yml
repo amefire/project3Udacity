@@ -611,48 +611,55 @@ jobs:
       - revert-migrations    
 
   cloudfront-update:
-    docker:
-      - image: amazon/aws-cli
+      docker:
+        - image: cimg/base:stable   #Executor
+        # - image: circleci/node:13.8.0    #Executor
+        # - image: alpine:latest      #Executor
+      steps:
+        - checkout
+        - install_awscli
+        - install_nodejs
+        - run:
+            name: Install dependencies
+            command: |
+              sudo apt-get update -y
+              sudo apt install -y curl
+        - run:
+            name: Save Old Workflow ID to kvdb.io
+            command: |
+              export OLD_WORKFLOW_ID=$(aws cloudformation \
+                list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+                --no-paginate --output text)
+              echo "Old Workflow ID: $OLD_WORKFLOW_ID"
+              curl https://kvdb.io/${KVDB_BUCKET}/old_workflow_id -d "${OLD_WORKFLOW_ID}"
+        - run:
+            name: Update cloudfront distribution
+            command: |
+              aws cloudformation deploy \
+              --template-file .circleci/files/cloudfront.yml \
+              --stack-name InitialStack \
+              --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}"
+              echo Current Workflow ID: "${CIRCLE_WORKFLOW_ID:0:7}"
+  # rolls back; should migration fail
+        - destroy-environment
+        - revert-migrations
+
+  cleanup:
+    docker:                                                                           
+      - image: cimg/base:stable   #Executor
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            yum install -y tar gzip
-      - run:
-          name: Update cloudfront distribution
-          command: |
-            aws cloudformation deploy \
-                    --template-file .circleci/files/cloudfront.yml \
-                    --stack-name InitialStack \
-                    --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
-                    --tags project=udapeople
-      # Here's where you will add some code to rollback on failure 
-      - destroy-environment
-      - revert-migrations 
-
-cleanup:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run:
-          name: Get old stack workflow id
-          command: |
-            export OldWorkflowID=$(aws cloudformation \
-                    list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-                    --no-paginate --output text)
-            echo OldWorkflowID: "${OldWorkflowID}"
-            echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
-
-            # export OldWorkflowID="${OldWorkflowID}"
-            # export STACKS=[] #put the list of stacks here
-            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-                    --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
-            echo Stack names: "${STACKS[@]}" 
+      - install_awscli
+      - install_nodejs
       - run:
           name: Remove old stacks and files
           command: |
+            export STACKS=($(aws cloudformation list-stacks \
+                --query "StackSummaries[*].StackName" \
+                --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
+            echo Stack names: "${STACKS[@]}"
+            export OldWorkflowID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/old_workflow_id)
+            echo Old Workflow ID: $OldWorkflowID
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
@@ -691,5 +698,5 @@ workflows:
           requires: [deploy-backend, deploy-frontend]
       - cloudfront-update:
           requires: [smoke-test]
-      # - cleanup:
-      #     requires: [cloudfront-update]
+      - cleanup:
+          requires: [cloudfront-update]
