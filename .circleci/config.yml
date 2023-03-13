@@ -405,13 +405,13 @@ jobs:
             --stack-name InitialStack \
             --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}"
             echo Current Workflow ID: "${CIRCLE_WORKFLOW_ID:0:7}"
-# rolls back; should migration fail
+# rolls back; if migration fail
       - destroy-environment
       - revert-migrations
 
   cleanup:
     docker:                                                                           
-      - image: cimg/base:stable   #Executor
+      - image: cimg/base:stable   # the Executor
     steps:
       - checkout
       - install_awscli
@@ -435,13 +435,13 @@ jobs:
   configure-node-exporter:
     docker:
      
-      - image: cimg/python:3.10     #     
+      - image: cimg/python:3.10     #     the executor
     steps:
       - checkout
       - install_ansible
       - install_awscli
       - add_ssh_keys:
-          fingerprints: ["6c:16:c9:87:db:27:29:81:a9:70:85:ad:15:1d:c3:bb"]
+          fingerprints: ["6c:16:c9:87:db:27:29:81:a9:70:85:ad:15:1d:c3:bb"] #fingerprints generated in circleci.
     
       - attach_workspace:
           at: ~/
