@@ -411,7 +411,7 @@ jobs:
 
   cleanup:
     docker:                                                                           
-      - image: cimg/base:stable   # the Executor
+      - image: cimg/base:stable   # the Executor.
     steps:
       - checkout
       - install_awscli
