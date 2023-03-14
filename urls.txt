@@ -1,0 +1,11 @@
+
+
+[URL04] : ec2-100-25-117-249.compute-1.amazonaws.com
+
+[URL03]Cloud front: http://d8jygwzuf6x5y.cloudfront.net/#/employees\
+
+[URL02] : http://udapeople-2cc58c5.s3-website-us-east-1.amazonaws.com/#/employees\
+
+[URL01] : GitHub: https://github.com/amefire/project3Udacity}
+
+[URL05] : http://ec2-54-89-50-251.compute-1.amazonaws.com/
